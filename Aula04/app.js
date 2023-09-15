@@ -29,6 +29,45 @@ app.post("/cadastrar",function(req,res){
     })
 })
 
+app.get("/consulta", function(req,res){
+    post.findAll().then(function(post){
+        res.render("consulta", {post})
+    }).catch(function(erro){
+        console.log("Erro ao carregar o banco: " + erro)
+    })
+})
+
+app.get("/excluir/:id", function(req, res){
+    post.destroy({where: {'id': req.params.id}}).then(function(){
+        res.render("primeira_pagina")
+    }).catch(function(erro){
+        console.log("Erro ao excluir" + erro)
+    })
+})
+
+app.get("/editar/:id", function(req, res){
+    post.findAll({where: {'id': req.params.id}}).then(function(post){
+        res.render("editar", {post})
+    }).catch(function(erro){
+        console.log("Erro ao carregar banco: " + erro)
+    })
+})
+
+app.post("/atualizar", function(req, res){
+    post.update({
+        nome: req.body.nome,
+        endereco: req.body.endereco,
+        bairro: req.body.bairro,
+        cep: req.body.cep
+    },{
+        where: {
+            id: req.body.id
+        }
+    }).then(function(){
+        res.redirect("/consulta")
+    })
+})
+
 app.listen(8081, function(){
     console.log("Servidor ativo")
 })
